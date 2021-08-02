@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inno.SAS_HospitalManagement.model.Doctor;
 import com.inno.SAS_HospitalManagement.model.Patient;
 import com.inno.SAS_HospitalManagement.model.PatientAdmitInfo;
 import com.inno.SAS_HospitalManagement.model.Room;
@@ -123,6 +124,16 @@ public class AdminController
 	public Optional<Room> getRoomStatus(@RequestParam int roomNo)
 	{
 		return adminService.getRoomStatus(roomNo);
+	}
+	@PostMapping(path="doctorDetails",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> doctorDetails(@RequestBody Doctor doctor)
+	{
+		System.out.println(doctor.getSpacialization());
+		System.out.println(doctor.getDoc_id());
+		System.out.println(doctor.getConsultingPatientId());
+		adminService.doctorDetails(doctor);
+		
+		return ResponseEntity.ok("Doctor details updated");
 	}
 
 }

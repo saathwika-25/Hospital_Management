@@ -5,7 +5,9 @@ import java.sql.Time;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,26 +26,41 @@ public class EmployeeAttendanceController {
 	private EmployeeAttendanceService employeeAttendanceService;
 
 	@PostMapping(path = "login")
-	public String login(@RequestBody EmployeeAttendance employeeAttendance) {
+	public ResponseEntity<String> login(@RequestBody EmployeeAttendance employeeAttendance) {
 		Time time = new Time(System.currentTimeMillis());
 		Date date = new Date(System.currentTimeMillis());
 		employeeAttendance.setLoginTime(time);
 		employeeAttendance.setEntryDate(date);
+		try
+		{
 		employeeAttendanceService.login(employeeAttendance);
-		return "login Succsessfull";
+		return ResponseEntity.ok("login Succsessfull");
+		}
+		catch(RuntimeException rex)
+		{
+			System.out.println(rex);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rex.getMessage());
+		}
 
 	}
 
 	@Transactional
 	@PostMapping(path = "logout", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String logout(@RequestBody EmployeeAttendance employeeAttendance) {
+	public ResponseEntity<String> logout(@RequestBody EmployeeAttendance employeeAttendance) {
 		Time time = new Time(System.currentTimeMillis());
 		Date date = new Date(System.currentTimeMillis());
 		employeeAttendance.setLogoutTime(time);
 		employeeAttendance.setEntryDate(date);
-		employeeAttendanceService.logout(employeeAttendance);
-		return "logout Succsessfull";
-
+		try
+		{
+			employeeAttendanceService.logout(employeeAttendance);
+			return ResponseEntity.ok("logout Succsessfull");
+		}
+		catch(RuntimeException rex)
+		{
+			System.out.println(rex);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rex.getMessage());
+		}
 	}
 
 	@GetMapping(path = "get/id")

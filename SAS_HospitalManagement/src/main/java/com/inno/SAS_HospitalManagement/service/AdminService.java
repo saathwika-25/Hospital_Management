@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno.SAS_HospitalManagement.repository.AdminRepository;
+import com.inno.SAS_HospitalManagement.repository.DoctorRepository;
 import com.inno.SAS_HospitalManagement.repository.RoomRepository;
+import com.inno.SAS_HospitalManagement.model.Doctor;
 import com.inno.SAS_HospitalManagement.model.PatientAdmitInfo;
 import com.inno.SAS_HospitalManagement.model.Room;
 
@@ -15,12 +17,16 @@ public class AdminService {
 
 	private AdminRepository adminRepository;
 	private RoomRepository roomRepository;
+	private DoctorRepository doctorRepository;
 
-	public AdminService(AdminRepository adminRepository, RoomRepository roomRepository) {
+	
+
+	public AdminService(AdminRepository adminRepository, RoomRepository roomRepository,
+			DoctorRepository doctorRepository) {
 		this.adminRepository = adminRepository;
 		this.roomRepository = roomRepository;
+		this.doctorRepository = doctorRepository;
 	}
-
 	public void admit(PatientAdmitInfo patientAdmitInfo)
 	{
 		adminRepository.save(patientAdmitInfo);
@@ -46,5 +52,15 @@ public class AdminService {
 	public Optional<Room> getRoomStatus(int roomNo)
 	{
 		return roomRepository.getRoomStatus(roomNo);		
+	}
+	public void patientDetails(Doctor doctor) {
+		 doctorRepository.save(doctor);
+
+	}
+	public String doctorDetails(Doctor doctor)
+	{
+		doctorRepository.update(doctor.getSpacialization(),doctor.getDoc_id(),doctor.getConsultingPatientId());
+		
+		return "Succsessfull";
 	}
 }
